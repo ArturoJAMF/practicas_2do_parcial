@@ -1,52 +1,133 @@
-import React from "react";
-import { View, Text, StyleSheet, FlatList } from "react-native";
+// Zona 1: Importaciones
+import { StatusBar } from "expo-status-bar";
+import {
+  StyleSheet,
+  Text,
+  View,
+  FlatList,
+  Button,
+  SectionList,
+} from "react-native";
+import { useState } from "react";
 
-const datos = [
-  { id: "1", nombre: "Manzana", color: "#FF6B6B" },
-  { id: "2", nombre: "Plátano", color: "#FFEAA7" },
-  { id: "3", nombre: "Uva", color: "#DDA0DD" },
-  { id: "4", nombre: "Naranja", color: "#F39C12" },
-  { id: "5", nombre: "Sandía", color: "#96CEB4" },
-  { id: "6", nombre: "Fresa", color: "#FF6B6B" },
-  { id: "7", nombre: "Mango", color: "#FFEAA7" },
-  { id: "8", nombre: "Kiwi", color: "#4ECDC4" },
-];
+// Zona 2: Componente principal
+export default function FlatSectionListScreen() {
+  const [elementos, setElementos] = useState([
+    { id: "1", nombre: "Elemento A" },
+    { id: "2", nombre: "Elemento B" },
+    { id: "3", nombre: "Elemento C" },
+    { id: "4", nombre: "Elemento D" },
+    { id: "5", nombre: "Elemento E" },
+    { id: "6", nombre: "Elemento F" },
+    { id: "7", nombre: "Elemento G" },
+    { id: "8", nombre: "Elemento H" },
+    { id: "9", nombre: "Elemento I" },
+    { id: "10", nombre: "Elemento J" },
+    { id: "11", nombre: "Elemento K" },
+    { id: "12", nombre: "Elemento L" },
+  ]);
 
-export default function FlatListScreen() {
-  return (
-    <View style={styles.fondo}>
-      <Text style={styles.titulo}>FlatList</Text>
+  const [secciones, setSecciones] = useState([
+    { tituloCategoria: "Refrescos", data: ["Coca-cola", "Fanta", "Pepsi"] },
+    { tituloCategoria: "Jugos", data: ["Zanahoria", "Naranja", "Remolacha"] },
+    { tituloCategoria: "Refrescos", data: ["Coca-cola", "Fanta", "Pepsi"] },
+    { tituloCategoria: "Jugos", data: ["Zanahoria", "Naranja", "Remolacha"] },
+    { tituloCategoria: "Refrescos", data: ["Coca-cola", "Fanta", "Pepsi"] },
+    { tituloCategoria: "Jugos", data: ["Zanahoria", "Naranja", "Remolacha"] },
+  ]);
+
+  const eliminarElemento = (id) => {
+    setElementos(elementos.filter((item) => item.id !== id));
+  };
+
+  const renderContenidoSuperior = () => (
+    <View>
+      <Text style={styles.titulo}>Práctica FlatList</Text>
       <FlatList
-        data={datos}
+        data={elementos}
         keyExtractor={(item) => item.id}
+        scrollEnabled={false}
         renderItem={({ item }) => (
-          <View style={styles.item}>
-            <View style={[styles.circulo, { backgroundColor: item.color }]} />
+          <View style={styles.itemFlat}>
             <Text style={styles.texto}>{item.nombre}</Text>
+            <Button
+              title="Eliminar"
+              onPress={() => eliminarElemento(item.id)}
+            />
           </View>
         )}
       />
+      <View style={styles.barraDivisora} />
+      <Text style={styles.titulo}>Práctica SectionList</Text>
+    </View>
+  );
+
+  return (
+    <View style={styles.container}>
+      <SectionList
+        sections={secciones}
+        keyExtractor={(item, index) => item + index}
+        ListHeaderComponent={renderContenidoSuperior}
+        renderItem={({ item }) => (
+          <View style={styles.itemSection}>
+            <Text style={styles.texto}>{item}</Text>
+          </View>
+        )}
+        renderSectionHeader={({ section: { tituloCategoria } }) => (
+          <View style={styles.encabezado}>
+            <Text style={styles.textoEncabezado}>{tituloCategoria}</Text>
+          </View>
+        )}
+      />
+      <StatusBar style="auto" />
     </View>
   );
 }
 
+// Zona 3: Estilos
 const styles = StyleSheet.create({
-  fondo: { flex: 1, backgroundColor: "#f5f5f5", padding: 16 },
+  container: {
+    flex: 1,
+    backgroundColor: "#ffffff",
+    paddingTop: 60,
+    paddingHorizontal: 20,
+  },
   titulo: {
     fontSize: 20,
     fontWeight: "bold",
-    color: "#333",
+    marginBottom: 20,
     textAlign: "center",
-    marginBottom: 16,
   },
-  item: {
+  itemFlat: {
     flexDirection: "row",
+    justifyContent: "space-between",
     alignItems: "center",
-    backgroundColor: "#fff",
-    borderRadius: 10,
-    padding: 14,
-    marginBottom: 8,
+    padding: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: "#cccccc",
   },
-  circulo: { width: 14, height: 14, borderRadius: 7, marginRight: 12 },
-  texto: { color: "#333", fontSize: 15 },
+  itemSection: {
+    padding: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: "#b50000",
+  },
+  encabezado: {
+    backgroundColor: "#ff0202",
+    padding: 8,
+    marginTop: 15,
+  },
+  textoEncabezado: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "#333333",
+  },
+  texto: {
+    fontSize: 16,
+  },
+  barraDivisora: {
+    height: 2,
+    backgroundColor: "#444444",
+    marginVertical: 30,
+    borderRadius: 1,
+  },
 });

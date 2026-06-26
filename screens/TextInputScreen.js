@@ -1,61 +1,87 @@
-import React, { useState } from "react";
-import { View, Text, StyleSheet, TextInput } from "react-native";
+import { useState } from "react";
+import {
+  View,
+  Button,
+  TextInput,
+  Platform,
+  Keyboard,
+  Alert,
+  StyleSheet,
+} from "react-native";
 
-export default function TextInputScreen() {
+export default function RegistroForm() {
   const [nombre, setNombre] = useState("");
-  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [edad, setEdad] = useState("");
+  const [correo, setCorreo] = useState("");
+
+  const alertasManager = (titulo, mensaje) => {
+    if (Platform.OS === "web") {
+      alert(`${titulo}: ${mensaje}`);
+    } else {
+      Alert.alert(titulo, mensaje);
+    }
+  };
+
+  const procesarRegistro = () => {
+    if (Platform.OS !== "web") Keyboard.dismiss();
+    if (!nombre || !password || !edad || !correo) {
+      alertasManager("Validación", "Todos los campos son obligatorios");
+      return;
+    }
+    alertasManager("Éxito", `Registro procesado para: ${nombre}`);
+  };
+
   return (
-    <View style={styles.fondo}>
-      <Text style={styles.titulo}>TextInput</Text>
-      <Text style={styles.etiqueta}>Nombre</Text>
+    <View style={styles.container}>
       <TextInput
         style={styles.input}
-        placeholder="Escribe tu nombre..."
+        placeholder="Nombre Completo"
         value={nombre}
         onChangeText={setNombre}
       />
-      <Text style={styles.etiqueta}>Email</Text>
       <TextInput
         style={styles.input}
-        placeholder="Escribe tu email..."
-        value={email}
-        onChangeText={setEmail}
-        keyboardType="email-address"
+        placeholder="Contraseña"
+        value={password}
+        onChangeText={setPassword}
+        secureTextEntry={true}
       />
-      {nombre || email ? (
-        <View style={styles.resultado}>
-          <Text style={styles.resultadoTexto}>Nombre: {nombre}</Text>
-          <Text style={styles.resultadoTexto}>Email: {email}</Text>
-        </View>
-      ) : null}
+      <TextInput
+        style={styles.input}
+        placeholder="Edad"
+        value={edad}
+        onChangeText={setEdad}
+        keyboardType="numeric"
+        maxLength={5}
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Correo"
+        value={correo}
+        onChangeText={setCorreo}
+        keyboardType="email-address"
+        autoCapitalize="none"
+        autoCorrect={false}
+      />
+      <Button title="Registrar usuario" onPress={procesarRegistro} />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  fondo: { flex: 1, backgroundColor: "#f5f5f5", padding: 16 },
-  titulo: {
-    fontSize: 20,
-    fontWeight: "bold",
-    color: "#333",
-    textAlign: "center",
-    marginBottom: 20,
+  container: {
+    flex: 1,
+    justifyContent: "center",
+    padding: 20,
+    backgroundColor: "#f5f6fa",
   },
-  etiqueta: { color: "#555", fontSize: 13, marginBottom: 4 },
   input: {
-    backgroundColor: "#fff",
-    borderRadius: 10,
-    padding: 12,
-    fontSize: 15,
-    marginBottom: 14,
     borderWidth: 1,
-    borderColor: "#ddd",
-  },
-  resultado: {
+    borderColor: "#dcdde1",
+    padding: 12,
+    borderRadius: 8,
+    marginBottom: 12,
     backgroundColor: "#fff",
-    borderRadius: 10,
-    padding: 16,
-    marginTop: 6,
   },
-  resultadoTexto: { color: "#333", fontSize: 14, marginBottom: 4 },
 });
